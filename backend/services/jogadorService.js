@@ -1,29 +1,46 @@
-const { Jogador } = require('../models');
+const Jogador = require('../models/jogador');
+const Time = require('../models/time'); // Adicione esta importação
 
-class JogadorService {
+const JogadorService = {
   async getAll() {
-    return Jogador.findAll();
-  }
+    return await Jogador.findAll({
+      include: [{
+        model: Time,
+        as: 'time',
+        attributes: ['nome'] // Retorna apenas o nome do time
+      }]
+    });
+  },
+
+  async create(jogadorData) {
+    return await Jogador.create(jogadorData);
+  },
 
   async getById(id) {
-    return Jogador.findByPk(id);
-  }
+    return await Jogador.findByPk(id, {
+      include: [{
+        model: Time,
+        as: 'time',
+        attributes: ['nome']
+      }]
+    });
+  },
 
-  async create(data) {
-    return Jogador.create(data);
+  // Método otimizado para buscar por nome do time
+  async getByTeamName(timeNome) {
+    return await Jogador.findAll({
+      include: [{
+        model: Time,
+        as: 'time',
+        where: { nome: timeNome },
+        attributes: [] // Apenas filtra, não retorna dados do time
+      }],
+      order: [
+        ['num_jogador', 'ASC'],
+        ['nome', 'ASC']
+      ]
+    });
   }
+};
 
-  async update(id, data) {
-    const jogador = await Jogador.findByPk(id);
-    if (!jogador) throw new Error('Jogador não encontrado');
-    return jogador.update(data);
-  }
-
-  async delete(id) {
-    const jogador = await Jogador.findByPk(id);
-    if (!jogador) throw new Error('Jogador não encontrado');
-    return jogador.destroy();
-  }
-}
-
-module.exports = new JogadorService();
+module.exports = JogadorService;

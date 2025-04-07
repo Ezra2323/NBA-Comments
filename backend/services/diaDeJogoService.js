@@ -1,29 +1,28 @@
-const { DiaDeJogo } = require('../models');
+const DiaDeJogo = require('../models/diaDeJogo');
+const Time = require('../models/time');
 
-class DiaDeJogoService {
+const DiaDeJogoService = {
   async getAll() {
-    return DiaDeJogo.findAll();
-  }
-
-  async getById(id) {
-    return DiaDeJogo.findByPk(id);
-  }
+    return await DiaDeJogo.findAll({
+      include: [
+        { model: Time, as: 'time1' },
+        { model: Time, as: 'time2' }
+      ]
+    });
+  },
 
   async create(data) {
-    return DiaDeJogo.create(data);
-  }
+    return await DiaDeJogo.create(data);
+  },
 
-  async update(id, data) {
-    const dia = await DiaDeJogo.findByPk(id);
-    if (!dia) throw new Error('Dia de jogo não encontrado');
-    return dia.update(data);
+  async getById(id) {
+    return await DiaDeJogo.findByPk(id, {
+      include: [
+        { model: Time, as: 'time1' },
+        { model: Time, as: 'time2' }
+      ]
+    });
   }
+};
 
-  async delete(id) {
-    const dia = await DiaDeJogo.findByPk(id);
-    if (!dia) throw new Error('Dia de jogo não encontrado');
-    return dia.destroy();
-  }
-}
-
-module.exports = new DiaDeJogoService();
+module.exports = DiaDeJogoService;

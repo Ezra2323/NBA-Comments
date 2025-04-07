@@ -1,29 +1,17 @@
-const { Usuario } = require('../models');
+const Usuario = require('../models/usuario');
 
-class UsuarioService {
+const UsuarioService = {
   async getAll() {
-    return Usuario.findAll();
-  }
-
-  async getById(id) {
-    return Usuario.findByPk(id);
-  }
+    return await Usuario.findAll();
+  },
 
   async create(data) {
-    return Usuario.create(data);
-  }
+    return await Usuario.create(data);
+  },
 
-  async update(id, data) {
-    const usuario = await Usuario.findByPk(id);
-    if (!usuario) throw new Error('Usuário não encontrado');
-    return usuario.update(data);
+  async getById(id) {
+    return await Usuario.findByPk(id);
   }
+};
 
-  async delete(id) {
-    const usuario = await Usuario.findByPk(id);
-    if (!usuario) throw new Error('Usuário não encontrado');
-    return usuario.destroy();
-  }
-}
-
-module.exports = new UsuarioService();
+module.exports = UsuarioService;

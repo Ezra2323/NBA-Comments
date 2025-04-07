@@ -1,39 +1,75 @@
-const usuarioService = require('../services/usuarioService.js');
+const UsuarioService = require('../services/usuarioService');
+const Usuario = require('../models/usuario');
+const { Op } = require('sequelize'); // Importe o Operador do Sequelize
 
-class UsuarioController {
+const UsuarioController = {
   async getAll(req, res) {
-    const usuarios = await usuarioService.getAll();
-    res.json(usuarios);
-  }
-
-  async getById(req, res) {
-    const usuario = await usuarioService.getById(req.params.id);
-    if (!usuario) return res.status(404).json({ error: 'Usuário não encontrado' });
-    res.json(usuario);
-  }
+    try {
+      const usuarios = await UsuarioService.getAll();
+      res.json(usuarios);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
 
   async create(req, res) {
-    const novoUsuario = await usuarioService.create(req.body);
-    res.status(201).json(novoUsuario);
-  }
-
-  async update(req, res) {
     try {
-      const usuario = await usuarioService.update(req.params.id, req.body);
-      res.json(usuario);
-    } catch (err) {
-      res.status(404).json({ error: err.message });
+      const { nome, nickname, senha } = req.body;
+
+      // Verifica se nome ou nickname já existem
+      const usuarioExistente = await Usuario.findOne({
+        where: {
+          [Op.or]: [
+            { nome },
+            { nickname }
+          ]
+        }
+      });
+
+      if (usuarioExistente) {
+        let mensagem = '';
+        if (usuarioExistente.nome === nome) {
+          mensagem = 'Este nome já está em uso';
+        } else {
+          mensagem = 'Este nickname já está em uso';
+        }
+        return res.status(400).json({ error: mensagem });
+      }
+
+      const novoUsuario = await UsuarioService.create({ nome, nickname, senha });
+      res.status(201).json(novoUsuario);
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  async getById(req, res) {
+    try {
+      const usuario = await UsuarioService.getById(req.params.id);
+      usuario ? res.json(usuario) : res.status(404).send("Usuário não encontrado");
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  async login(req, res) {
+    try {
+      const { nickname, senha } = req.body;
+      const usuario = await Usuario.findOne({ where: { nickname } });
+      
+      if (!usuario || usuario.senha !== senha) {
+        return res.status(401).json({ error: 'Credenciais inválidas' });
+      }
+      
+      res.json({
+        id: usuario.id,
+        nickname: usuario.nickname,
+        nome: usuario.nome
+      });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
   }
+};
 
-  async delete(req, res) {
-    try {
-      await usuarioService.delete(req.params.id);
-      res.status(204).end();
-    } catch (err) {
-      res.status(404).json({ error: err.message });
-    }
-  }
-}
-
-module.exports = new UsuarioController();
+module.exports = UsuarioController;

@@ -1,15 +1,15 @@
-module.exports = (sequelize, DataTypes) => {
-    const Time = sequelize.define('Time', {
-      Nome: {
-        type: DataTypes.STRING,
-        primaryKey: true
-      }
-    });
-  
-    Time.associate = (models) => {
-      Time.hasMany(models.Jogador, { foreignKey: 'Id_time' });
-    };
-  
-    return Time;
-  };
-  
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
+
+const Time = sequelize.define('Time', {
+  nome: {
+    type: DataTypes.STRING,
+    primaryKey: true,
+    unique: true 
+  }
+}, {
+  tableName: 'times',
+  timestamps: false,
+});
+
+module.exports = Time;

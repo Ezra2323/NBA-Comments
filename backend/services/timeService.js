@@ -1,29 +1,13 @@
-const { Time } = require('../models');
+const Time = require('../models/time');
 
-class TimeService {
+const TimeService = {
   async getAll() {
-    return Time.findAll();
-  }
-
-  async getByName(nome) {
-    return Time.findByPk(nome);
-  }
+    return await Time.findAll();
+  },
 
   async create(data) {
-    return Time.create(data);
+    return await Time.create(data);
   }
+};
 
-  async update(nome, data) {
-    const time = await Time.findByPk(nome);
-    if (!time) throw new Error('Time não encontrado');
-    return time.update(data);
-  }
-
-  async delete(nome) {
-    const time = await Time.findByPk(nome);
-    if (!time) throw new Error('Time não encontrado');
-    return time.destroy();
-  }
-}
-
-module.exports = new TimeService();
+module.exports = TimeService;

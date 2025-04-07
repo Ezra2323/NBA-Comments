@@ -1,83 +1,145 @@
-// src/pages/Game.jsx
-import React, { useEffect, useState } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { CalendarDays, ChevronLeft, MessageSquare } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import api from '../services/api';
+import { Link } from 'react-router-dom';
+import styled from 'styled-components';
 
-export default function Game() {
-  const { id } = useParams();
-  const [jogo, setJogo] = useState(null);
-  const [comentarios, setComentarios] = useState([]);
-  const [novoComentario, setNovoComentario] = useState('');
+const Container = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+`;
+
+const Title = styled.h2`
+  color: #2c3e50;
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 2rem;
+  position: relative;
+  padding-bottom: 10px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 3px;
+    background-color: #3498db;
+  }
+`;
+
+const GamesList = styled.ul`
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 20px;
+`;
+
+const GameCard = styled.li`
+  background-color: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-left: 4px solid #3498db;
+
+  &:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+  }
+`;
+
+const Teams = styled.div`
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  color: #2c3e50;
+`;
+
+const Time = styled.strong`
+  color: #3498db;
+`;
+
+const DateInfo = styled.div`
+  color: #7f8c8d;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 15px;
+`;
+
+const DetailsLink = styled(Link)`
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #3498db;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #2980b9;
+  }
+`;
+
+const LoadingMessage = styled.p`
+  text-align: center;
+  padding: 40px;
+  font-size: 1.2rem;
+  color: #666;
+`;
+
+export default function Home() {
+  const [jogos, setJogos] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Simulação de requisição à API
-    const mockJogo = {
-      id,
-      time_casa: 'Lakers',
-      time_fora: 'Warriors',
-      data: new Date(),
-      local: 'Crypto.com Arena',
-      campeonato: 'NBA Playoffs',
-    };
-    setJogo(mockJogo);
-  }, [id]);
-
-  const adicionarComentario = () => {
-    if (novoComentario.trim()) {
-      setComentarios([...comentarios, novoComentario]);
-      setNovoComentario('');
+    async function fetchJogos() {
+      try {
+        const response = await api.get('/jogos');
+        setJogos(response.data);
+      } catch (error) {
+        console.error('Erro ao buscar jogos:', error);
+      } finally {
+        setLoading(false);
+      }
     }
-  };
 
-  if (!jogo) return <div className="p-6">Carregando...</div>;
+    fetchJogos();
+  }, []);
 
   return (
-    <div className="p-6 min-h-screen bg-gradient-to-b from-white to-gray-100">
-      <div className="max-w-3xl mx-auto bg-white p-6 rounded-2xl shadow-xl border border-gray-200">
-        <Link to="/" className="flex items-center text-blue-600 mb-4 hover:underline">
-          <ChevronLeft className="w-5 h-5 mr-1" /> Voltar
-        </Link>
-
-        <h2 className="text-3xl font-bold mb-2 text-gray-800">
-          {jogo.time_casa} <span className="text-gray-500">vs</span> {jogo.time_fora}
-        </h2>
-
-        <div className="flex items-center text-sm text-gray-600 mb-2">
-          <CalendarDays className="w-4 h-4 mr-2" />
-          {new Date(jogo.data).toLocaleString()}
-        </div>
-        <div className="text-sm text-gray-600 mb-1">Local: <span className="font-medium text-gray-800">{jogo.local}</span></div>
-        <div className="text-sm text-gray-600 mb-4">Campeonato: <span className="font-medium text-gray-800">{jogo.campeonato}</span></div>
-
-        <div className="mt-6">
-          <h3 className="text-xl font-semibold text-gray-800 flex items-center mb-2">
-            <MessageSquare className="w-5 h-5 mr-2" /> Comentários
-          </h3>
-          <div className="space-y-2 mb-4">
-            {comentarios.length === 0 && <p className="text-gray-500">Nenhum comentário ainda.</p>}
-            {comentarios.map((coment, idx) => (
-              <div key={idx} className="bg-gray-100 p-3 rounded-xl border border-gray-200 text-sm">
-                {coment}
-              </div>
-            ))}
-          </div>
-          <div className="flex gap-2">
-            <input
-              type="text"
-              value={novoComentario}
-              onChange={(e) => setNovoComentario(e.target.value)}
-              placeholder="Escreva um comentário..."
-              className="flex-1 px-4 py-2 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-            <button
-              onClick={adicionarComentario}
-              className="bg-blue-600 text-white px-4 py-2 rounded-xl hover:bg-blue-700 transition"
-            >
-              Enviar
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Container>
+      <Title> Jogos</Title>
+      
+      {loading ? (
+        <LoadingMessage>Carregando jogos...</LoadingMessage>
+      ) : (
+        <GamesList>
+          {jogos.map((jogo) => (
+            <GameCard key={jogo.id}>
+              <Teams>
+                <Time>{jogo.time1?.nome}</Time> vs <Time>{jogo.time2?.nome}</Time>
+              </Teams>
+              <DateInfo>
+                <span>⏰</span>
+                {new Date(jogo.data).toLocaleString('pt-BR', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </DateInfo>
+              <DetailsLink to={`/jogo/${jogo.id}`}>
+                Ver detalhes
+              </DetailsLink>
+            </GameCard>
+          ))}
+        </GamesList>
+      )}
+    </Container>
   );
 }

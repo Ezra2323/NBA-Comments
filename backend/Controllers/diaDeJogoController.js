@@ -1,39 +1,20 @@
-const diaService = require('../services/diaDeJogoService.js');
+const DiaDeJogoService = require('../services/diaDeJogoService');
 
-class DiaDeJogoController {
+const DiaDeJogoController = {
   async getAll(req, res) {
-    const dias = await diaService.getAll();
-    res.json(dias);
-  }
-
-  async getById(req, res) {
-    const dia = await diaService.getById(req.params.id);
-    if (!dia) return res.status(404).json({ error: 'Dia não encontrado' });
-    res.json(dia);
-  }
+    const jogos = await DiaDeJogoService.getAll();
+    res.json(jogos);
+  },
 
   async create(req, res) {
-    const novoDia = await diaService.create(req.body);
-    res.status(201).json(novoDia);
-  }
+    const novo = await DiaDeJogoService.create(req.body);
+    res.status(201).json(novo);
+  },
 
-  async update(req, res) {
-    try {
-      const dia = await diaService.update(req.params.id, req.body);
-      res.json(dia);
-    } catch (err) {
-      res.status(404).json({ error: err.message });
-    }
+  async getById(req, res) {
+    const jogo = await DiaDeJogoService.getById(req.params.id);
+    jogo ? res.json(jogo) : res.status(404).send("Jogo não encontrado");
   }
+};
 
-  async delete(req, res) {
-    try {
-      await diaService.delete(req.params.id);
-      res.status(204).end();
-    } catch (err) {
-      res.status(404).json({ error: err.message });
-    }
-  }
-}
-
-module.exports = new DiaDeJogoController();
+module.exports = DiaDeJogoController;

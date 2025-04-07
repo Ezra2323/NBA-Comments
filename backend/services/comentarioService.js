@@ -1,29 +1,34 @@
-const { Comentario } = require('../models');
+const Comentario = require('../models/comentario');
+const Usuario = require('../models/usuario');
+const DiaDeJogo = require('../models/diaDeJogo');
 
-class ComentarioService {
+const ComentarioService = {
   async getAll() {
-    return Comentario.findAll();
-  }
+    return await Comentario.findAll({
+      include: [
+        { model: Usuario,
+          attributes: ['id', 'nickname']
+        },
+        { model: DiaDeJogo }
+      ]
+    });
+  },
 
-  async getById(id) {
-    return Comentario.findByPk(id);
-  }
+  async getByGameDay(idDiaJogo) {
+    return await Comentario.findAll({
+      where: { id_dia_jogo: idDiaJogo },
+      include: [
+        { model: Usuario },
+        { model: DiaDeJogo }
+      ]
+    });
+  },
 
   async create(data) {
-    return Comentario.create(data);
-  }
-
-  async update(id, data) {
-    const comentario = await Comentario.findByPk(id);
-    if (!comentario) throw new Error('Comentário não encontrado');
-    return comentario.update(data);
-  }
-
-  async delete(id) {
-    const comentario = await Comentario.findByPk(id);
-    if (!comentario) throw new Error('Comentário não encontrado');
-    return comentario.destroy();
-  }
+  console.log('📥 Dados recebidos para criar comentário:', data);
+  return await Comentario.create(data);
 }
 
-module.exports = new ComentarioService();
+};
+
+module.exports = ComentarioService;

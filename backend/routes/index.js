@@ -1,49 +1,39 @@
 const express = require('express');
 const router = express.Router();
 
-// Importar todos os controllers
-const JogadorController = require('../Controllers/jogadoresController.js');
-const TimeController = require('../Controllers/timeController.js');
-const UsuarioController = require('../Controllers/usuarioController.js');
-const ComentarioController = require('../Controllers/comentarioController.js');
-const DiaDeJogoController = require('../Controllers/diaDeJogoController.js');
+const cors = require('cors'); 
+const app = express();
 
+const TimeController = require('../controllers/timeController');
+const JogadorController = require('../controllers/jogadorController');
+const UsuarioController = require('../controllers/usuarioController');
+const DiaDeJogoController = require('../controllers/diaDeJogoController');
+const ComentarioController = require('../controllers/comentarioController');
 
-// Rotas para Jogador
+// Times
+router.get('/times', TimeController.getAll);
+router.post('/times', TimeController.create);
+
+// Jogadores
 router.get('/jogadores', JogadorController.getAll);
 router.get('/jogadores/:id', JogadorController.getById);
+
+router.get('/jogadores/time/nome/:timeNome', JogadorController.getByTeamName);
 router.post('/jogadores', JogadorController.create);
-router.put('/jogadores/:id', JogadorController.update);
-router.delete('/jogadores/:id', JogadorController.delete);
 
-// Rotas para Time
-router.get('/times', TimeController.getAll);
-router.get('/times/:nome', TimeController.getByName);
-router.post('/times', TimeController.create);
-router.put('/times/:nome', TimeController.update);
-router.delete('/times/:nome', TimeController.delete);
-
-// Rotas para Usuario
+// Usuários
 router.get('/usuarios', UsuarioController.getAll);
 router.get('/usuarios/:id', UsuarioController.getById);
 router.post('/usuarios', UsuarioController.create);
-router.put('/usuarios/:id', UsuarioController.update);
-router.delete('/usuarios/:id', UsuarioController.delete);
+router.post('/usuarios/login', UsuarioController.login);
+// Dias de Jogo
+router.get('/jogos', DiaDeJogoController.getAll);
+router.get('/jogos/:id', DiaDeJogoController.getById);
+router.post('/jogos', DiaDeJogoController.create);
 
-// Rotas para Comentario
+// Comentários
 router.get('/comentarios', ComentarioController.getAll);
-router.get('/comentarios/:id', ComentarioController.getById);
+router.get('/comentarios/dia/:id', ComentarioController.getByGameDay);
 router.post('/comentarios', ComentarioController.create);
-router.put('/comentarios/:id', ComentarioController.update);
-router.delete('/comentarios/:id', ComentarioController.delete);
-
-// Rotas para Dia de Jogo
-router.get('/dias', DiaDeJogoController.getAll);
-router.get('/dias/:id', DiaDeJogoController.getById);
-router.post('/dias', DiaDeJogoController.create);
-router.put('/dias/:id', DiaDeJogoController.update);
-router.delete('/dias/:id', DiaDeJogoController.delete);
-
-
 
 module.exports = router;
