@@ -45,5 +45,6 @@ Os protótipos das principais telas do sistema foram desenvolvidos:
 
 ---
 - Cadastro
+  
     <img src="Prototipo/Cadastro.png" alt="Logo" width="550" style ="margin-left: 300"/>
 
