@@ -8,11 +8,13 @@
 
 
 ## 1. Tema
-O trabalho final tem como tema o desenvolvimento de
+O trabalho final tem como tema o desenvolvimento de um site de comentários do basquete da NBA.
 ## 2. Escopo
 Este projeto terá as seguintes funcionalidades: 
 
-**Login:** usuário insere seu nome de usuário, ou email, e senha.
+**Login:** usuário insere seu nome de usuário, nickname,e senha.
+
+**Cadastro:** usuário insere seu nome de usuário, nickname,e senha.
 
 
 **Comentários nos Jogos:** A plataforma oferece uma área interativa onde os usuários podem comentar sobre os jogos em andamento, compartilhar suas opiniões, análises e debater com outros fãs da NBA. A seção de comentários é organizada por jogo, permitindo discussões focadas nos eventos específicos de cada partida.
@@ -29,15 +31,19 @@ Neste trabalho não serão considerados:
 Os protótipos das principais telas do sistema foram desenvolvidos:
 - Página inicial: Visualização dos jogos que acontecem e acontecerão no dia;
 
-    <img src="Prototipo/IMG-1.png" alt="Logo" width="550" style ="margin-left: 300" />
+    <img src="Prototipo/Home.png" alt="Logo" width="550" style ="margin-left: 300" />
 
 ---
 - Página do jogo: Mais detalhes do jogo e comentários poderão ser vistos;
 
-    <img src="Prototipo/IMG-2.png" alt="Logo" width="550" style ="margin-left: 300"/>
+    <img src="Prototipo/Jogo1.png" alt="Logo" width="550" style ="margin-left: 300"/>
+    <img src="Prototipo/Jogo2.png" alt="Logo" width="550" style ="margin-left: 300"/>
 ---
 - Login 
 
-    <img src="Prototipo/IMG-1.png" alt="Logo" width="550" style ="margin-left: 300"/>
+    <img src="Prototipo/Login.png" alt="Logo" width="550" style ="margin-left: 300"/>
 
+---
+- Cadastro
+    <img src="Prototipo/Cadastro.png" alt="Logo" width="550" style ="margin-left: 300"/>
 
